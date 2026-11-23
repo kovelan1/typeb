@@ -1,4 +1,4 @@
-package com.typeb.webapp;
+package com.typeb.webapp.service;
 
 import org.springframework.stereotype.Service;
 

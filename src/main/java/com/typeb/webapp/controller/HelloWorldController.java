@@ -1,5 +1,7 @@
-package com.typeb.webapp;
+package com.typeb.webapp.controller;
 
+import com.typeb.webapp.dto.ErrorResponse;
+import com.typeb.webapp.service.HelloWorldService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +23,6 @@ import java.util.Map;
 @RestController
 public class HelloWorldController {
 
-    private static final Map<String, String> ERROR_BODY = Map.of("error", "Invalid Input");
-
     private final HelloWorldService helloWorldService;
 
     public HelloWorldController(HelloWorldService helloWorldService) {
@@ -30,15 +30,15 @@ public class HelloWorldController {
     }
 
     @GetMapping("/hello-world")
-    public ResponseEntity<Map<String, String>> helloWorld(
+    public ResponseEntity<?> helloWorld(
             @RequestParam(required = false) String name) {
 
         if (name == null || name.isBlank()) {
-            return ResponseEntity.badRequest().body(ERROR_BODY);
+            return ResponseEntity.badRequest().body(ErrorResponse.INVALID_INPUT);
         }
 
         if (!helloWorldService.isValidName(name)) {
-            return ResponseEntity.badRequest().body(ERROR_BODY);
+            return ResponseEntity.badRequest().body(ErrorResponse.INVALID_INPUT);
         }
 
         String message = helloWorldService.buildGreeting(name);
