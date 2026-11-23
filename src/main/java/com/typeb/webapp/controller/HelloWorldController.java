@@ -33,10 +33,6 @@ public class HelloWorldController {
     public ResponseEntity<?> helloWorld(
             @RequestParam(required = false) String name) {
 
-        if (name == null || name.isBlank()) {
-            return ResponseEntity.badRequest().body(ErrorResponse.INVALID_INPUT);
-        }
-
         if (!helloWorldService.isValidName(name)) {
             return ResponseEntity.badRequest().body(ErrorResponse.INVALID_INPUT);
         }
