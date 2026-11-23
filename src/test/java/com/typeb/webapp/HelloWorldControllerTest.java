@@ -1,26 +1,36 @@
 package com.typeb.webapp;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Unit tests for GET /hello-world?name={name}
+ * Integration tests for GET /hello-world?name={name}.
  *
  * Rules:
  *   - name starts with A–M (case-insensitive) → 200 { "message": "Hello <Capitalised>" }
  *   - name starts with N–Z (case-insensitive) → 400 { "error": "Invalid Input" }
- *   - name missing or empty                  → 400 { "error": "Invalid Input" }
+ *   - name missing or empty                   → 400 { "error": "Invalid Input" }
  */
-@WebMvcTest(HelloWorldController.class)
+@SpringBootTest
 class HelloWorldControllerTest {
 
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+    }
 
     // -------------------------------------------------------------------------
     // Happy-path: first letter A–M

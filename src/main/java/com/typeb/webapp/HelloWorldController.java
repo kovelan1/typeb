@@ -1,0 +1,47 @@
+package com.typeb.webapp;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * REST controller for GET /hello-world.
+ *
+ * <p>Query parameter: {@code name} (required, non-empty).
+ *
+ * <ul>
+ *   <li>Name starts with A–M → 200 OK  {@code { "message": "Hello <Name>" }}</li>
+ *   <li>Name starts with N–Z → 400 Bad Request {@code { "error": "Invalid Input" }}</li>
+ *   <li>Name missing or empty  → 400 Bad Request {@code { "error": "Invalid Input" }}</li>
+ * </ul>
+ */
+@RestController
+public class HelloWorldController {
+
+    private static final Map<String, String> ERROR_BODY = Map.of("error", "Invalid Input");
+
+    private final HelloWorldService helloWorldService;
+
+    public HelloWorldController(HelloWorldService helloWorldService) {
+        this.helloWorldService = helloWorldService;
+    }
+
+    @GetMapping("/hello-world")
+    public ResponseEntity<Map<String, String>> helloWorld(
+            @RequestParam(required = false) String name) {
+
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest().body(ERROR_BODY);
+        }
+
+        if (!helloWorldService.isValidName(name)) {
+            return ResponseEntity.badRequest().body(ERROR_BODY);
+        }
+
+        String message = helloWorldService.buildGreeting(name);
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+}
